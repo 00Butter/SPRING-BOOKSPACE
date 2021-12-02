@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mem">
+
+   <select id="allList" resultType="memdto">
+   		SELECT * FROM M_MEMBER ORDER BY NUM
+   </select>
+   <insert parameterType="memdto" id="joinOne">
+	insert into M_MEMBER (num,id, pw, name, birth, gender, phone, joindate, grade,complain,cash) values(M_MEMBER_SEQ.nextval, #{id}, #{pw}, #{name}, #{birth}, #{gender}, #{phone}, sysdate, '동네책방',0, 0) 
+	</insert>
+	<insert parameterType="memdto" id="insertlog">
+	 insert into M_LOGIN values(#{id},#{pw},'mem') 
+	 </insert>
+	<select parameterType="memdto" id="selectOne" resultType="memdto">
+	 select * from m_member where id = #{id} 
+	 </select>
+	 <select id="selectNum" parameterType="Integer" resultType="memdto">
+	 select * from m_member where num=#{params}
+	 </select>
+	<update parameterType="memdto" id="updateOne">
+	update m_member set pw=#{pw}, phone=#{phone} where id=#{id} 
+	</update>
+	<update id="updateLog" parameterType="memdto">
+	update m_login set pw=#{pw} where id=#{id} 
+	</update>
+	<delete parameterType="memdto" id="deleteOne">
+	delete from m_member where pw = #{pw} and id = #{id} 
+	</delete>
+	<delete parameterType="memdto" id="deleteLog">
+	delete from m_login where pw = #{pw} and id = #{id} 
+	</delete>
+	<select resultType="memdto" id="findOne1" parameterType="memdto"> 
+		select * from m_member where name = #{name} and birth = #{birth} 
+	</select>
+	<select resultType="memdto" id="findOne2" parameterType="memdto"> 
+		select * from m_member where id = #{id} and birth = #{birth} and phone = #{phone} 
+	</select>
+	<delete parameterType="Integer" id="deleteNum">
+		delete from m_member where num=#{params}
+	</delete>
+	<update id="complainUp" parameterType="String">
+		update m_member set complain=complain+1 where id=#{id}
+	</update>
+	<select id="mybookList" parameterType="String" resultType="bb">
+		select bb.* from m_book bb, (select * from m_payment where id= #{id}) pay where bb.bookname=pay.bookname
+	</select>
+	<select id="BookOne" parameterType="String" resultType="bb">
+		select * from m_book where bookname= #{param}
+	</select>
+	<select id="myBook" parameterType="String" resultType="paydto">
+		select * from m_payment where id = #{id}
+	</select>
+	<update id="bookmark" parameterType="paydto">
+   		update m_payment set   bookmark=#{bookmark} where id=#{id} and  bookname=#{bookname}
+   </update>
+   <update id="updateLevel" parameterType="memdto">
+   		update m_member set grade=#{grade} where id=#{id}
+   </update>
+</mapper>

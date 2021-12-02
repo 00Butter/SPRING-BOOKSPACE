@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="book">
+	<select id="allList" resultType="bb">
+		SELECT * FROM M_BOOK ORDER BY
+		NUM desc
+	</select>
+	<select id="regList" resultType="bookreg" parameterType="String">
+		SELECT *
+		FROM M_BOOKREG WHERE STATE = #{type} ORDER BY NUM
+	</select>
+	<select resultType="bb" id="best">
+		select * from m_book order by count
+		desc
+	</select>
+	<select resultType="bb" id="newB">
+		select * from m_book order by num
+		desc
+	</select>
+	<select resultType="bb" id="magz">
+		select * from m_book where
+		maintype='잡지' order by count desc
+	</select>
+	<select resultType="bb" id="cartoon">
+		select * from m_book where
+		maintype='만화' order by count desc
+	</select>
+	<select resultType="bb" id="list" parameterType="String">
+		select * from
+		m_book where subtype=#{a} order by count desc
+	</select>
+	<select id="listmain" parameterType="String" resultType="bb">
+		select *
+		from m_book where maintype=#{a} order by count desc
+	</select>
+	<select id="search" parameterType="String" resultType="bb">
+		select *
+		from m_book where bookname like #{a}
+	</select>
+	<select id="bestOne" resultType="bb">
+		select * from m_book order by
+		count desc
+	</select>
+	<select id="selectOne" parameterType="Integer" resultType="bb">
+		select * from m_book where num = #{num}
+	</select>
+<insert id="insertOne" parameterType="bookreg"> 
+insert into m_bookreg values(m_bookreg_seq.nextval, #{bookname}, #{maintype}, #{subtype}, #{writer},
+ #{price}, #{img}, #{publisher}, #{state}, #{conlist}, #{story}) </insert>
+	<select id="selectinfo" resultType="bb" parameterType="Integer">
+		select *
+		from m_book where num=#{num}
+	</select>
+	<select resultType="bookreg" id="detailView" parameterType="Integer">
+		select * from m_bookreg where num=#{num}
+	</select>
+	<delete id="delete" parameterType="Integer">
+		delete from m_book where
+		num=#{num}
+	</delete>
+	<delete id="delName" parameterType="String">
+		delete from m_book where
+		bookname=#{params}
+	</delete>
+	<delete id="delregName" parameterType="String">
+		delete from m_bookreg
+		where bookname=#{params}
+	</delete>
+	<update id="bookup" parameterType="bb">
+		update m_book set
+		maintype=#{maintype}, subtype=#{subtype},
+		price=#{price},
+		story=#{story}, conlist=#{conlist}, count=#{count}
+		where
+		publisher=#{publisher} and bookname=#{bookname}
+	</update>
+	<select resultType="bb" id="findBookNum" parameterType="String">
+		select *
+		from m_book where bookname=#{bookname}
+	</select>
+	<select resultType="bb" id="detailAll" parameterType="Integer">
+		select * from m_book where num=#{num}
+	</select>
+	<select resultType="bb" id="deleteck" parameterType="Integer">
+		select * from m_book where num=#{num}
+	</select>
+	<select resultType="bb" id="corpList" parameterType="String">
+		select * from m_book where publisher=#{name}
+	</select>
+	<select resultType="bookreg" id="corpregList" parameterType="bookreg">
+		select * from m_bookreg where publisher=#{publisher} and
+		state=#{state}
+	</select>
+	<select resultType="String" id="dubcheck" parameterType="String">
+		select * from m_book where bookname=#{bookname}
+	</select>
+	<select resultType="String" id="dubdelete" parameterType="String"> 
+	select * from m_bookreg where bookname=#{bookname} </select>
+</mapper>
