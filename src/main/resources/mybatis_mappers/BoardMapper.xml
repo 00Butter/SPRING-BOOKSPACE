@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+
+	<select id="msgList" parameterType="board" resultType="board">
+		select *
+		from m_board where (id= #{id} or receive = #{id} ) and
+		boardtype=#{boardtype} order by groupnum desc, replynum asc
+	</select>
+	<insert id="msgInsert" parameterType="board">
+		insert into m_board
+		values(m_board_seq.nextval,#{id},#{boardtype},#{title},#{content},to_char(sysdate,'YYYY-MM-DD
+		'),#{receive},0,0,0,null)   
+	</insert>
+	<insert id="msgReply" parameterType="board">
+		insert into m_board 
+		values(m_board_seq.nextval,#{id},#{boardtype},#{title},#{content},to_char(sysdate,'YYYY-MM-DD
+		'),#{receive},#{groupnum},#{replynum},0,null)
+	</insert>
+	<update id="setgroup">
+		update m_board set groupnum = num , replynum=0
+		where groupnum=0 or groupnum is null
+	</update>
+	<select id="msgAllList" resultType="board">
+		select * from m_board where
+		boardtype='pubmsg' order by groupNum desc,
+		replynum asc
+	</select>
+	<update id="countplus" parameterType="board">
+		update m_board set count=1 where num = #{num}
+	</update>
+	<select id="msgnotread" resultType="board">
+		SELECT * FROM M_BOARD WHERE
+		BOARDTYPE='pubmsg' AND COUNT = 0 AND REPLYNUM = 0 ORDER BY GROUPNUM DESC,
+		REPLYNUM ASC
+	</select>
+	<select resultType="ofd" id="offList">
+		select * from m_official order by
+		num desc
+	</select>
+	<insert parameterType="ofd" id="off">
+		insert into m_official
+		values(m_official_seq.nextval,#{title},#{writer},#{content},to_char(sysdate,
+		'YYYY-MM-DD'))
+	</insert> 
+	<update id="numup" parameterType="board">
+		update m_board set groupnum 
+		=
+		#{num} where num = #{num}
+	</update>
+	<insert parameterType="ofd" id="insertOne">
+		insert into m_official
+		values(m_official_seq.nextval,#{writer},#{title},#{content},#{btype},sysdate)
+	</insert>
+	<insert id="claim" parameterType="board">
+		insert into m_board (num, 
+		id,boardtype, title, content, regdate,
+		receive,bookname,groupnum,
+		replynum)
+		values(m_board_seq.nextval,#{id},#{boardtype},#{title},#{content},to_char(sysdate,'YYYY-MM-DD'),#{receive},#{bookname},#{groupnum},#{replynum})
+	</insert>
+	<select id="getn" parameterType="board" resultType="Integer">
+		select num 
+		from m_board where title = #{title} and id = #{id} and content = #{content}
+	</select>
+	<insert parameterType="board" id="one">
+		insert into m_board
+		(num,id,boardtype, title, content, regdate, receive,replynum)
+		values(m_board_seq.nextval,#{id},#{boardtype},#{title},#{content},to_char(sysdate,'YYYY-MM-DD'),#{receive},0)
+	</insert>
+	<select resultType="board" parameterType="String" id="QnAList">
+		select *
+		from m_board where( id = #{id} or receive = #{id}) and (boardType =
+		'one' or boardType='pub') order by groupnum desc, replynum asc
+	</select>
+
+	<select id="oneBoard" parameterType="board" resultType="board">
+		select *
+		from m_board where num =#{num}
+	</select>
+	<delete parameterType="board" id="QnADel">
+		delete from m_board where num =
+		#{num}
+	</delete>
+
+</mapper>

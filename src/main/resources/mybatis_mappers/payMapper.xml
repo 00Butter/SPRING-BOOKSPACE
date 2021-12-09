@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pay">
+	<select id="cartSelectList" parameterType="memdto" resultType="cartdto">
+		select * from m_cart where id=#{id} order by num
+	</select>
+	<delete id="cartDeleteOne" parameterType="memdto">
+		delete from m_cart
+		where num=#{num} and id=#{id}
+	</delete>
+	<delete id="cartDeletebook" parameterType="cartdto">
+		delete from m_cart
+		where bookname=#{bookname} and id=#{id}
+	</delete>
+	<delete id="cartDeleteAll" parameterType="memdto">
+		delete from m_cart
+		where id=#{id}
+	</delete>
+	<delete id="deleteCash" parameterType="memdto">
+		delete from m_cash where
+		id=#{id}
+	</delete>
+	<delete id="payDel" parameterType="memdto">
+		delete from m_payment where
+		id=#{id}
+	</delete>
+	<select id="selectCash" parameterType="memdto" resultType="memdto">
+		select * from m_member where id=#{id}
+	</select>
+
+	<select id="cartPaymentOne" parameterType="memdto" resultType="cartdto">
+		select * from m_cart where num=#{num} and id=#{id}
+	</select>
+
+	<update id="cashUpdate" parameterType="memdto">
+		update m_member set
+		cash=#{cash} where id=#{id}
+	</update>
+
+	<select id="getOneBookSelect" parameterType="cartdto"
+		resultType="bb">
+		select * from m_book where bookname=#{bookname}
+	</select>
+
+	<insert id="paymentInsertOne" parameterType="paydto">
+		insert into
+		m_payment values(m_pay_seq.nextval, #{id}, #{img}, #{bookname},
+		#{price}, #{publisher}, sysdate, null)
+	</insert>
+
+	<select id="buySelectList" parameterType="memdto" resultType="paydto">
+		select * from m_payment where id=#{id} order by num desc
+	</select>
+
+	<select id="cashInsert" parameterType="cashdto">
+		insert into m_cash
+		values(m_cash_seq.nextval, #{id}, #{cashType}, #{price}, sysdate)
+	</select>
+
+	<select id="cashSelectList" parameterType="memdto" resultType="cashdto">
+		select * from m_cash where id=#{id} order by num desc
+	</select>
+
+	<insert id="revInsert" parameterType="rev">
+		insert into m_review
+		values(m_review_seq.nextval, #{id}, #{img}, #{bookname}, #{review},
+		#{star}, #{recommend}, #{complain}, #{reviewDate})
+	</insert>
+	<insert parameterType="cartdto" id="insertOne"> insert into m_cart
+		values(m_cart_seq.nextval, #{id}, #{img}, #{bookname}, #{publisher},
+		#{price}) </insert>
+
+	<select resultType="cartdto" parameterType="cartdto" id="check"> 
+	select * from m_cart  where bookname = #{bookname}  and id = #{id}</select>
+	<select resultType="paydto" parameterType="cartdto" id="checkBook"> 
+	select * from m_payment  where bookname = #{bookname}  and id = #{id}</select>
+
+	<select resultType="bb" parameterType="String" id="book"> select * from
+		m_book where bookname = #{bookname} </select>
+		
+	<insert id="accOne" parameterType="acc" >
+		insert into m_account values(m_account_seq.nextval,#{publisher},#{price},#{cost},#{gender},#{booktype},to_char(sysdate,'YYYY-MM-DD'))
+	</insert> 	
+	<select id="paycount" resultType="paydto" parameterType="memdto">
+		select sum(price) as price from m_payment where id= #{id}
+	</select>
+		
+</mapper>

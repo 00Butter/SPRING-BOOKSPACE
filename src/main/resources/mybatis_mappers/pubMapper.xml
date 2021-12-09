@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pub">
+	<select id="checkLicense" parameterType="String" resultType="pubdto">
+		SELECT * FROM M_PUB WHERE LICENSE = #{license}
+	</select>
+	<insert id="joinOne" parameterType="pubdto">
+		INSERT INTO M_PUB
+		VALUES(M_PUB_SEQ.NEXTVAL,#{id},#{pw},#{name},#{license},#{employee},#{phone},#{address},#{bank},#{banknum},0)
+	</insert>
+	<select id="checkID" parameterType="String" resultType="String">
+		SELECT ID FROM M_LOGIN WHERE ID = #{id}
+	</select>
+	<insert id="insertlog" parameterType="pubdto">
+		INSERT INTO M_LOGIN VALUES(#{id},#{pw},'pub')
+	</insert>
+	<delete id="deleteOne" parameterType="pubdto">
+		DELETE FROM M_PUB WHERE NUM = #{num}
+	</delete>
+	<select id="selectOne" parameterType="Integer" resultType="pubdto">
+		SELECT * FROM M_PUB WHERE NUM = #{params}
+	</select>
+	<delete id="deleteLog" parameterType="pubdto">
+		DELETE FROM M_LOGIN WHERE ID = #{id}
+	</delete>
+	
+	<select id="searchList" parameterType="String" resultType="pubdto">
+		SELECT * FROM M_PUB WHERE ID LIKE #{search} or name like #{search}
+	</select>
+	<select id="selectId" parameterType="String" resultType="pubdto">
+		select * from m_pub where id=#{param}
+	</select>
+	<update id="pubUpdate" parameterType="pubdto">
+		update m_pub set pw=#{pw}, employee=#{employee}, phone=#{phone},
+		bank=#{bank}, banknum=#{banknum}, address=#{address} where num=#{num}
+	</update>
+	<update id="pubdelup" parameterType="pubdto">
+		update m_pub set del= 1 where id=#{id} and pw=#{pw}
+	</update>
+	<select id="selectOneId" parameterType="String" resultType="String">
+		SELECT NAME FROM M_PUB WHERE ID = #{id}
+	</select>
+	<select id="accountPub" parameterType="String" resultType="acc">
+		select sum(cost) as cost ,sum(price) as price ,publisher, regdate 
+		from m_account where publisher=#{params} group by regdate,publisher  order by regdate desc
+	</select>
+	<select id="findId" parameterType="pubdto" resultType="pubdto">
+		select * from m_pub where name = #{name} and license = #{license}
+	</select>
+	<select id="findPw" parameterType="pubdto" resultType="pubdto">
+		select * from m_pub where id = #{id} and license = #{license} and phone = #{phone}
+	</select>
+	<update id="updateLog" parameterType="pubdto">
+		update m_login set pw=#{pw} where id=#{id}
+	</update>
+</mapper>

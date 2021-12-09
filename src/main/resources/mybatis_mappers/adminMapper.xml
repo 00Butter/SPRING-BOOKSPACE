@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin">
+<select id="logOne" parameterType="Integer" resultType="sys">
+	SELECT * FROM M_ADMIN WHERE SYSNO = #{params}
+</select>
+<select id="findOne" parameterType="sys" resultType="sys">
+	SELECT * FROM M_ADMIN WHERE NAME = #{name} AND PHONE = #{phone}
+</select>
+<insert id="insertOne" parameterType="sys">
+	insert into m_admin values(to_char(m_admin_seq.nextval,'099999'),#{name},#{phone})
+</insert>
+<select id="adminList" resultType="sys">
+	SELECT * FROM M_ADMIN ORDER BY SYSNO
+</select>
+<delete id="delOne" parameterType="Integer">
+	DELETE FROM M_ADMIN WHERE SYSNO = #{params}
+</delete>
+<select id="pubList" resultType="pubdto">
+	SELECT * FROM M_PUB ORDER BY NUM
+</select>
+<select id="visitList" resultType="data">
+	SELECT VISITDATE , sum(COUNT) as count FROM M_VISITOR where VISITDATE> to_char(sysdate-90,'YYYY-MM-DD')GROUP BY VISITDATE ORDER BY VISITDATE
+</select>
+<insert id="visit">
+	INSERT INTO M_VISITOR VALUES(to_char(sysdate,'YYYY-MM-DD'),1)
+</insert>
+<select id="joindata" resultType="data">
+	select joindate, sum(man) as man, sum(woman)as woman, sum(man+woman)as count from m_join group by joindate order by joindate
+</select>
+<insert id="joinman" >
+	insert into m_join values(to_char(sysdate,'YYYY-MM-DD'),1,0)
+</insert>
+<insert id="joinwoman" >
+	insert into m_join values(to_char(sysdate,'YYYY-MM-DD'),0,1)
+</insert>
+<update id="plusCash" parameterType="memdto">
+	update m_member set cash = cash + #{cash} where id= #{id}
+</update>
+<select id="allAc" resultType="acc">
+	select regdate, sum(price) as price from m_account where regdate > to_char(sysdate-365,'YYYY-MM-DD') group by regdate order by regdate
+</select>
+<select id="pubAc" resultType="acc">
+	select publisher, sum(cost) as cost from m_account group by publisher
+</select>
+<select id="yearAc" resultType="acc">
+	select regdate from m_account group by regdate order by regdate
+</select>
+<select id="searchAc" parameterType="String" resultType="acc">
+	select regdate, publisher, sum(price) as price, sum(cost) as cost from m_account where regdate like #{params} group by regdate, publisher order by regdate
+</select>
+<select id="accCount" resultType="Integer">
+	select count(booktype) from m_account
+</select>
+<select id="accType" parameterType="String" resultType="Integer">
+	select count(booktype) from m_account where booktype=#{params}
+</select>
+<select id="accpub" resultType="acc">
+	select sum(cost) as cost , publisher from m_account group by publisher
+</select>
+<select id="complain" resultType="rev">
+	select * from m_review where complain > 0 order by reviewDate
+</select>
+<delete id="delcomplain" parameterType="Integer">
+	delete from m_review where num=#{params}
+</delete>
+<select id="memboard" parameterType="String" resultType="board">
+	select * from m_board where boardtype=#{params} or boardtype='pub' order by groupnum desc, replynum 
+</select>
+<select id="memnotread" parameterType="String" resultType="board">
+	select * from m_board where (boardtype=#{params} or boardtype='pub') and count = 0 and replynum = 0 order by groupnum desc, replynum
+</select>
+<delete id="bookdel" parameterType="String">
+	delete from m_book where publisher = #{parmas}
+</delete>
+<delete id="bookregdel" parameterType="String">
+	delete from m_bookreg where publisher = #{parmas}
+</delete>
+<delete id="delboard" parameterType="board">
+	delete from m_board where id=#{id} or receive=#{name}
+</delete>
+<insert id="bookinsert" parameterType="bookreg">
+	insert into m_book values(m_book_seq.nextval,#{bookname},#{writer},#{maintype},#{subtype},#{price},#{img},#{publisher},
+	0,1,#{story},#{conlist},to_char(sysdate,'YYYY-MM-DD'))
+</insert>
+<delete id="regdelconfirm" parameterType="bookreg">
+	delete from m_bookreg where num=#{num}
+</delete>
+<select id="delpub" resultType="pubdto">
+	select * from m_pub where del>0 order by num
+</select>
+<select id="likeall" resultType="acc">
+	select count(num)as num, booktype from m_account group by booktype
+</select>
+<select id="likeGender" parameterType="String" resultType="acc">
+	select count(num)as num, booktype from m_account where gender=#{params} group by booktype
+</select>
+<select id="gendercount" resultType="acc">
+	select count(num)as num, gender from m_account group by gender
+</select>
+<select id="searchBookList" resultType="bb" parameterType="String">
+	select * from m_book where bookname like #{params}
+</select>
+<select id="onePub" parameterType="String" resultType="pubdto">
+	select * from m_pub where name=#{params}
+</select>
+<select id="onenumPub" parameterType="Integer" resultType="pubdto">
+	select * from m_pub where num=#{params}
+</select>
+</mapper>

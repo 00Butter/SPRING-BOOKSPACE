@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="view">
+
+	<select id="revSelectList" parameterType="rev" resultType="rev">
+		select * from m_review where id=#{id} order by num desc
+	</select>
+
+	<update id="revDelete" parameterType="rev">
+		update m_review set 
+		review=#{review}, reviewDate=#{reviewDate}, star =#{star} where num=#{num}
+	</update>
+
+	<update id="revUpdate" parameterType="rev">
+		update m_review set
+		review=#{review}, star=#{star},
+		reviewDate=to_char(sysdate,'YYYY-MM-DD') where num=#{num}
+	</update>
+
+	<select id="revSelectNum" parameterType="rev" resultType="rev">
+		select	* from m_review where num=#{num}
+	</select>
+	<delete id="delRev" parameterType="memdto">
+		delete from m_review where	id=#{id}
+	</delete>
+	<select resultType="rev" parameterType="rev" id="revStarSelect"> select * from
+		m_review where bookname=#{bookname} </select>
+	<update parameterType="bb" id="bookStarUpdate"> update m_book set
+		totalstar=#{totalstar} where bookname=#{bookname} </update>
+	<select resultType="rev" parameterType="String" id="selectRlist"> 
+	select * from m_review where bookname = #{reviewBN} </select>
+	<update id="recomUp" parameterType="Integer">
+		update m_review set recommend = recommend+1 where num=#{num}
+	</update>
+	<update id="complainUp" parameterType="Integer">
+		update m_review set complain = complain+1 where num=#{num}
+	</update>
+
+</mapper>
